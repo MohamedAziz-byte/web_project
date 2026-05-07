@@ -1,0 +1,207 @@
+<?php
+// Start session only if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Detect current page depth to build correct relative paths
+// Pages at root: index.php, product.php  -> base = ""
+// Pages in /user or /admin              -> base = "../"
+$depth = 0;
+$script = $_SERVER['SCRIPT_FILENAME'];
+$htdocs_rel = str_replace('\\', '/', $script);
+if (strpos($htdocs_rel, '/user/') !== false || strpos($htdocs_rel, '/admin/') !== false) {
+    $depth = 1;
+}
+$base = str_repeat('../', $depth);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:      #7b2fbe;
+      --purple-dark: #5a1f8e;
+      --purple-pale: #f3eeff;
+      --bg:          #f8f7fc;
+      --dark:        #12101a;
+      --text:        #2d2b38;
+      --muted:       #888;
+      --white:       #fff;
+      --radius:      14px;
+      --error:       #c0392b;
+      --success:     #1e7e4a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(123,47,190,0.1);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .nav-brand {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--dark);
+      white-space: nowrap;
+    }
+
+    .nav-brand span { color: var(--purple); }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .nav-center a {
+      padding: 0.42rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.87rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .nav-center a:hover,
+    .nav-center a.active {
+      background: var(--purple-pale);
+      color: var(--purple);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .nav-right a {
+      font-size: 0.87rem;
+      font-weight: 500;
+      color: var(--text);
+      padding: 0.42rem 0.9rem;
+      border-radius: 8px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .nav-right a:hover { background: var(--purple-pale); color: var(--purple); }
+
+    .nav-right .btn-signup {
+      background: var(--purple);
+      color: #fff !important;
+      padding: 0.42rem 1.1rem;
+      border-radius: 8px;
+      transition: background 0.2s, transform 0.15s !important;
+    }
+
+    .nav-right .btn-signup:hover {
+      background: var(--purple-dark) !important;
+      transform: translateY(-1px);
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.87rem;
+    }
+
+    .nav-user .username {
+      color: var(--purple);
+      font-weight: 600;
+    }
+
+    .nav-user .btn-logout {
+      border: 1.5px solid #ddd;
+      padding: 0.35rem 0.8rem;
+      border-radius: 7px;
+      color: var(--muted) !important;
+      font-size: 0.8rem;
+      transition: border-color 0.2s, color 0.2s !important;
+    }
+
+    .nav-user .btn-logout:hover {
+      border-color: var(--purple) !important;
+      color: var(--purple) !important;
+      background: transparent !important;
+    }
+
+    .nav-user .btn-admin {
+      background: var(--dark);
+      color: #fff !important;
+      padding: 0.35rem 0.9rem;
+      border-radius: 7px;
+      font-size: 0.8rem;
+    }
+
+    .nav-user .btn-admin:hover { background: #2a1052 !important; }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+      .nav-center { display: none; }
+      nav { padding: 0 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <!-- Brand -->
+  <a href="<?= $base ?>index.php" class="nav-brand">Shop<span>Zone</span></a>
+
+  <!-- Center links -->
+  <div class="nav-center">
+    <a href="<?= $base ?>index.php">Home</a>
+    <a href="<?= $base ?>index.php#products">Products</a>
+  </div>
+
+  <!-- Right side -->
+  <div class="nav-right">
+    <?php if (isset($_SESSION['user_id'])): ?>
+      <div class="nav-user">
+        <span>👋</span>
+        <span class="username"><?= htmlspecialchars($_SESSION['user_name']) ?></span>
+
+        <?php if ($_SESSION['role'] === 'admin'): ?>
+          <a href="<?= $base ?>admin/dashboard.php" class="btn-admin">⚙ Admin</a>
+        <?php else: ?>
+          <a href="<?= $base ?>user/account.php">My Account</a>
+        <?php endif; ?>
+
+        <a href="<?= $base ?>user/logout.php" class="btn-logout">Logout</a>
+      </div>
+    <?php else: ?>
+      <a href="<?= $base ?>user/login.php">Login</a>
+      <a href="<?= $base ?>user/signup.php" class="btn-signup">Sign Up</a>
+    <?php endif; ?>
+  </div>
+</nav>
