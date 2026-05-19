@@ -10,7 +10,7 @@
   font-size: 0.8rem;
   margin-top: auto;
 ">
-  © <?= date('Y') ?> <span style="color:#7b2fbe;font-weight:600;">ShopZone</span> — All rights reserved.
+  © <?= date('Y') ?> <span style="color:#7b2fbe;font-weight:600;">PureGain</span> — All rights reserved.
 </footer>
 
 </body>

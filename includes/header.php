@@ -176,7 +176,7 @@ $base = str_repeat('../', $depth);
 
 <nav>
   <!-- Brand -->
-  <a href="<?= $base ?>index.php" class="nav-brand">Shop<span>Zone</span></a>
+  <a href="<?= $base ?>index.php" class="nav-brand">Pure<span>Gain</span></a>
 
   <!-- Center links -->
   <div class="nav-center">

@@ -21,15 +21,15 @@ while ($row = mysqli_fetch_assoc($cat_result)) {
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ShopZone — Home</title>
-  <link rel="stylesheet" href="mystyle.css"/>
+  <title>PureGain — Home</title>
   
+  <link rel="stylesheet" href="mystyle.css"/>
 </head>
 <body>
 
 <!-- ── NAVBAR ── -->
 <nav>
-  <div class="nav-brand">Shop<span>Zone</span></div>
+  <div class="nav-brand">Pure<span>Gain</span></div>
   <div class="nav-links">
     <?php if (isset($_SESSION['user_id'])): ?>
       <div class="nav-user">
@@ -106,8 +106,10 @@ while ($row = mysqli_fetch_assoc($cat_result)) {
 
           <!-- Image or placeholder -->
           <div class="product-img">
-            <?php if (!empty($p['image']) && file_exists("uploads/" . $p['image'])): ?>
-              <img src="uploads/<?= htmlspecialchars($p['image']) ?>" alt="<?= htmlspecialchars($p['name']) ?>"/>
+            <?php if (!empty($p['image'])): ?>
+              <img src="uploads/<?= htmlspecialchars($p['image']) ?>"
+                   alt="<?= htmlspecialchars($p['name']) ?>"
+                   onerror="this.style.display='none'; this.parentElement.innerHTML='🛒';"/>
             <?php else: ?>
               🛒
             <?php endif; ?>
@@ -134,7 +136,7 @@ while ($row = mysqli_fetch_assoc($cat_result)) {
             <?php if ($p['stock'] > 0): ?>
               <a href="product.php?id=<?= $p['id'] ?>" class="btn-add">View & Order →</a>
             <?php else: ?>
-              <span class="btn-add" style="background:#ccc;cursor:not-allowed;">Out of Stock</span>
+              <a href="product.php?id=<?= $p['id'] ?>" class="btn-add" style="background:#aaa;">View Product</a>
             <?php endif; ?>
           </div>
 
@@ -146,7 +148,7 @@ while ($row = mysqli_fetch_assoc($cat_result)) {
 
 <!-- ── FOOTER ── -->
 <footer>
-  © 2024 <span>ShopZone</span> — All rights reserved.
+  © 2024 <span>PureGain</span> — All rights reserved.
 </footer>
 
 <script>
@@ -168,3 +170,4 @@ while ($row = mysqli_fetch_assoc($cat_result)) {
 
 </body>
 </html>
+
